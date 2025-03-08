@@ -1,0 +1,6 @@
+bash
+
+venv/
+
+.env
+__pycache__/
