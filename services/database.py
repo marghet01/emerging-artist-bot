@@ -1,6 +1,6 @@
 import json, os
 
-CONCERTS_FILE = 'concerts_test.json'
+CONCERTS_FILE = 'data/concerts.json'
 
 if not os.path.exists(CONCERTS_FILE):
     print(f"❌ Il file {CONCERTS_FILE} non esiste!")
