@@ -2,6 +2,7 @@ from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
 from services.database import get_concerts
 import bot.messages
+from services.functions import format_date
 
 message = bot.messages
 
@@ -30,14 +31,14 @@ async def concert_command(update: Update, context: CallbackContext):
     concerts = get_concerts(city)
     
     reply_city = city.capitalize()
-    print("Capitalized City", reply_city)
 
     if not concerts:
         await update.message.reply_text(f"❌ Nessun concerto trovato a {reply_city}")
     else:
         response = f"🎶 Concerti a {reply_city}:\n"
         for c in concerts:
-            response += f"- {c['artist']} ({c['date']}) @ {c['venue']}\n"
+            formatted_date = format_date(c['date'])
+            response += f"- {c['artist']} 📅 {formatted_date} @ {c['venue']}\n"
         await update.message.reply_text(response)
 
 def get_handlers():
