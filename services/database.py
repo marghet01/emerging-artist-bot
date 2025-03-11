@@ -41,4 +41,4 @@ def get_concerts(city):
     """Returns concerts based on the city"""
     concerts = load_concert()
     concerts_by_city = filter_by_city(concerts, city)
-    return filter_by_week(concerts)
+    return filter_by_week(concerts_by_city)
