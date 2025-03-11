@@ -8,7 +8,6 @@ def main():
 
     # Adding bot's commands
     for handler in get_handlers():
-        print("HANDLER: ", handler)
         application.add_handler(handler)
 
     print("✅ Bot started!")
