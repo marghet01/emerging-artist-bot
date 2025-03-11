@@ -28,11 +28,14 @@ async def concert_command(update: Update, context: CallbackContext):
     
     city = " ".join(context.args)
     concerts = get_concerts(city)
+    
+    reply_city = city.capitalize()
+    print("Capitalized City", reply_city)
 
     if not concerts:
-        await update.message.reply_text(f"❌ Nessun concerto trovato a {city}")
+        await update.message.reply_text(f"❌ Nessun concerto trovato a {reply_city}")
     else:
-        response = f"🎶 Concerti a {city}:\n"
+        response = f"🎶 Concerti a {reply_city}:\n"
         for c in concerts:
             response += f"- {c['artist']} ({c['date']}) @ {c['venue']}\n"
         await update.message.reply_text(response)
