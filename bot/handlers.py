@@ -1,10 +1,16 @@
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
 from services.database import get_concerts
-import bot.messages
 from services.functions import format_date
+import bot.messages
+import re
 
 message = bot.messages
+
+def escape_markdown(text):
+    """Escapes special characters for Telegram MarkdownV2"""
+    return re.sub(r"([_*\[\]()~`>#\+\-=|{}.!])", r"\\\1", text)
+
 
 async def start_command(update: Update, context: CallbackContext):
     """Replies to /start command"""
@@ -30,7 +36,7 @@ async def concert_command(update: Update, context: CallbackContext):
     city = " ".join(context.args)
     concerts = get_concerts(city)
     
-    reply_city = city.capitalize()
+    reply_city = escape_markdown(city.capitalize())
 
     if not concerts:
         await update.message.reply_text(f"❌ Nessun concerto trovato a *{reply_city}*", parse_mode="Markdown")
@@ -38,16 +44,21 @@ async def concert_command(update: Update, context: CallbackContext):
         response = f"🎶 Concerti a *{reply_city}*:\n\n"
 
         for c in concerts:
-            formatted_date = format_date(c['date'])
+            formatted_date = escape_markdown(format_date(c['date']))
+            artist = escape_markdown(c['artist'])
+            venue = escape_markdown(c['venue'])
+            genre = escape_markdown(c['genre'])
+            link = f"[🔗 Link all'evento]({escape_markdown(c['link'])})" if "link" in c and c["link"] else ""
             
             response += (
-                f"🎤 *{c['artist']}*\n"
+                f"🎤 *{artist}*\n"
                 f"📅 {formatted_date}\n"
-                f"📍 {c['venue']}\n"
-                f"🎵 {c['genre']}\n\n"  # Riga vuota tra i concerti
+                f"📍 {venue}\n"
+                f"🎵 {genre}\n"
+                f"{link}\n\n"
             )
 
-        await update.message.reply_text(response, parse_mode="Markdown")
+        await update.message.reply_text(response, parse_mode="MarkdownV2", disable_web_page_preview=True)
 
 def get_handlers():
     """Returns command handlers in one list."""
